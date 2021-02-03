@@ -24,6 +24,7 @@
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollBar>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
@@ -70,6 +71,9 @@ public:
     QLineEdit *lineEdit;
     QLabel *label_5;
     QLineEdit *lineEdit_3;
+    QLabel *label_6;
+    QLineEdit *lineEdit_4;
+    QSlider *horizontalSlider;
     QCheckBox *checkBox;
     QPushButton *pushButton;
     QSpacerItem *horizontalSpacer_10;
@@ -108,7 +112,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(933, 701);
+        MainWindow->resize(993, 701);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -214,8 +218,12 @@ public:
 
         online_but = new QPushButton(centralwidget);
         online_but->setObjectName(QString::fromUtf8("online_but"));
+        online_but->setEnabled(false);
         QIcon icon8;
         icon8.addFile(QString::fromUtf8("E:/PROJECTS/online.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon8.addFile(QString::fromUtf8("E:/PROJECTS/online.ico"), QSize(), QIcon::Normal, QIcon::On);
+        icon8.addFile(QString::fromUtf8("E:/PROJECTS/offline.ico"), QSize(), QIcon::Disabled, QIcon::Off);
+        icon8.addFile(QString::fromUtf8("E:/PROJECTS/offline.ico"), QSize(), QIcon::Disabled, QIcon::On);
         online_but->setIcon(icon8);
         online_but->setIconSize(QSize(48, 48));
 
@@ -287,11 +295,14 @@ public:
 
         lineEdit_2 = new QLineEdit(centralwidget);
         lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
+        lineEdit_2->setEnabled(false);
         QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Fixed);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(lineEdit_2->sizePolicy().hasHeightForWidth());
         lineEdit_2->setSizePolicy(sizePolicy1);
+        lineEdit_2->setMinimumSize(QSize(50, 0));
+        lineEdit_2->setReadOnly(false);
 
         horizontalLayout_5->addWidget(lineEdit_2);
 
@@ -302,8 +313,11 @@ public:
 
         lineEdit = new QLineEdit(centralwidget);
         lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
+        lineEdit->setEnabled(false);
         sizePolicy1.setHeightForWidth(lineEdit->sizePolicy().hasHeightForWidth());
         lineEdit->setSizePolicy(sizePolicy1);
+        lineEdit->setMinimumSize(QSize(50, 0));
+        lineEdit->setReadOnly(false);
 
         horizontalLayout_5->addWidget(lineEdit);
 
@@ -314,13 +328,37 @@ public:
 
         lineEdit_3 = new QLineEdit(centralwidget);
         lineEdit_3->setObjectName(QString::fromUtf8("lineEdit_3"));
+        lineEdit_3->setEnabled(false);
         sizePolicy1.setHeightForWidth(lineEdit_3->sizePolicy().hasHeightForWidth());
         lineEdit_3->setSizePolicy(sizePolicy1);
+        lineEdit_3->setMinimumSize(QSize(50, 0));
+        lineEdit_3->setReadOnly(false);
 
         horizontalLayout_5->addWidget(lineEdit_3);
 
+        label_6 = new QLabel(centralwidget);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+
+        horizontalLayout_5->addWidget(label_6);
+
+        lineEdit_4 = new QLineEdit(centralwidget);
+        lineEdit_4->setObjectName(QString::fromUtf8("lineEdit_4"));
+        lineEdit_4->setEnabled(false);
+        lineEdit_4->setMinimumSize(QSize(50, 0));
+        lineEdit_4->setReadOnly(false);
+
+        horizontalLayout_5->addWidget(lineEdit_4);
+
+        horizontalSlider = new QSlider(centralwidget);
+        horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
+        horizontalSlider->setMinimumSize(QSize(50, 0));
+        horizontalSlider->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_5->addWidget(horizontalSlider);
+
         checkBox = new QCheckBox(centralwidget);
         checkBox->setObjectName(QString::fromUtf8("checkBox"));
+        checkBox->setChecked(true);
 
         horizontalLayout_5->addWidget(checkBox);
 
@@ -588,7 +626,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 933, 20));
+        menubar->setGeometry(QRect(0, 0, 993, 20));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -614,10 +652,15 @@ public:
         label_2->setText(QCoreApplication::translate("MainWindow", "\320\222\320\265\321\200\321\201\320\270\321\217 \320\277\321\200\320\270\320\273\320\276\320\266\320\265\320\275\320\270\321\217 0.01", nullptr));
         openPort->setText(QCoreApplication::translate("MainWindow", "Open", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "\320\232\320\276\320\273\320\273\320\270\321\207\320\265\321\201\321\202\320\262\320\276 \320\270\320\274\320\277\321\203\320\273\321\214\321\201\320\276\320\262", nullptr));
+        lineEdit_2->setText(QCoreApplication::translate("MainWindow", "1000", nullptr));
         label_4->setText(QCoreApplication::translate("MainWindow", "\320\222\321\200\320\265\320\274\321\217 \320\270\320\274\320\277\321\203\320\273\321\214\321\201\320\260 \320\267\320\260\320\277\320\270\321\201\320\270, \320\274\320\272\321\201", nullptr));
+        lineEdit->setText(QCoreApplication::translate("MainWindow", "40", nullptr));
         label_5->setText(QCoreApplication::translate("MainWindow", "\320\241\320\272\320\262\320\260\320\266\320\275\320\276\321\201\321\202\321\214 %", nullptr));
+        lineEdit_3->setText(QCoreApplication::translate("MainWindow", "10", nullptr));
+        label_6->setText(QCoreApplication::translate("MainWindow", "\320\235\320\260\320\277\321\200\321\217\320\266\320\265\320\275\320\270\320\265, \320\222", nullptr));
+        lineEdit_4->setText(QCoreApplication::translate("MainWindow", "12", nullptr));
         checkBox->setText(QCoreApplication::translate("MainWindow", "\320\260\320\262\321\202\320\276", nullptr));
-        pushButton->setText(QCoreApplication::translate("MainWindow", "\320\236\321\202\320\277\321\200\320\260\320\262\320\270\321\202\321\214 \320\275\320\260\321\201\321\202\321\200\320\276\320\271\320\272\320\270 \320\275\320\260 \320\277\321\200\320\276\320\263\321\200\320\260\320\274\320\274\320\260\321\202\320\276\321\200", nullptr));
+        pushButton->setText(QCoreApplication::translate("MainWindow", "\320\236\321\202\320\277\321\200\320\260\320\262\320\270\321\202\321\214 \320\275\320\260\321\201\321\202\321\200\320\276\320\271\320\272\320\270", nullptr));
         tab_1_but->setText(QCoreApplication::translate("MainWindow", "\320\237\321\200\320\276\321\210\320\270\320\262\320\272\320\260", nullptr));
         tab_2_but->setText(QCoreApplication::translate("MainWindow", "\320\237\321\200\320\276\321\210\320\270\320\262\320\272\320\260", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "FileName.bin", nullptr));

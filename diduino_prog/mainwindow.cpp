@@ -61,11 +61,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->label_3->hide();
     ui->label_4->hide();
     ui->label_5->hide();
+    ui->label_6->hide();
     ui->lineEdit->hide();
     ui->lineEdit_2->hide();
     ui->lineEdit_3->hide();
+    ui->lineEdit_4->hide();
     ui->checkBox->hide();
     ui->pushButton->hide();
+    ui->horizontalSlider->hide();
 
     QObject::connect(this, SIGNAL(bufferUpdated()), this, SLOT(showBuf()));
     bufSize = 32;
@@ -150,6 +153,7 @@ void MainWindow::closeSerialPort()
         log(QString("Disconnect..."));
         ui->openPort->setText("Open");
         updatePortsTimer.start();
+        ui->online_but->setEnabled(false);
         QObject::disconnect(serialDataConnection);
     }
 }
@@ -176,6 +180,8 @@ void MainWindow::ic_version_select(QString boot_name){
         ui->ic_comboBox->addItem("KR556RT14");
         ui->ic_comboBox->addItem("KR556RT5");
         ui->ic_comboBox->setCurrentText("K155RE3");
+
+        ui->online_but->setEnabled(true);
     }
 
 }
@@ -359,22 +365,28 @@ void MainWindow::on_options_but_clicked()
         ui->label_3->hide();
         ui->label_4->hide();
         ui->label_5->hide();
+        ui->label_6->hide();
         ui->lineEdit->hide();
         ui->lineEdit_2->hide();
         ui->lineEdit_3->hide();
+        ui->lineEdit_4->hide();
         ui->checkBox->hide();
         ui->pushButton->hide();
+        ui->horizontalSlider->hide();
     }
     else{
         ui->checkBox->show();
         ui->label_3->show();
         ui->label_4->show();
         ui->label_5->show();
+        ui->label_6->show();
         ui->lineEdit->show();
         ui->lineEdit_2->show();
         ui->lineEdit_3->show();
+        ui->lineEdit_4->show();
         ui->checkBox->show();
         ui->pushButton->show();
+        ui->horizontalSlider->show();
     }
     setting_view = !setting_view;
 }
@@ -388,4 +400,35 @@ void MainWindow::on_verticalScrollBar_sliderMoved(int position)
 void MainWindow::chipOperationProgressBar(uint32_t value)
 {
     ui->progressBar->setValue(value);
+}
+
+void MainWindow::on_checkBox_stateChanged(int arg1)
+{//снятие и установка галочки авто
+    if(arg1 == 0){
+        ui->lineEdit->setEnabled(true);
+        ui->lineEdit_2->setEnabled(true);
+        ui->lineEdit_3->setEnabled(true);
+        ui->lineEdit_4->setEnabled(true);
+    }
+    else{
+        ui->lineEdit->setEnabled(false);
+        ui->lineEdit_2->setEnabled(false);
+        ui->lineEdit_3->setEnabled(false);
+        ui->lineEdit_4->setEnabled(false);
+
+        if(serialPort->isOpen()){
+            mArduino->n_impulses = 1000;
+            mArduino->length_of_impulse_mks = 40;
+            mArduino->duty = 10;
+            mArduino->voltage_prog = 12;
+        }
+    }
+
+}
+
+void MainWindow::on_help_but_clicked()
+{
+    QMessageBox::about(0, "Дидuino Программатор", "Программатор для советских ППЗУ: К155РЕ3, КР556РТ4, КР556РТ14, КР556РТ5.\n\nВерсия программы: 0.1\n\nСписок людей поддержавших проект:\n"
+                       "U-M, walhi, Kavka_TSR, Voron_Kor, Dmitry Saychenko, Михаил Царёв, Кошкин Хвост,\n"
+                       "Сергей Тюрюханов, Александр Драга, Андрей С., кот Обормот, Эскобар");
 }

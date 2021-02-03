@@ -37,6 +37,12 @@ public:
         RT14,
         RT5
     };
+
+    uint16_t n_impulses = 1000;
+    uint16_t length_of_impulse_mks = 40;
+    uint8_t duty = 10;
+    uint8_t voltage_prog = 12;
+
     chip get_chip_selected = NONE;
     explicit arduino(QSerialPort *port);
     uint32_t getChipSize();

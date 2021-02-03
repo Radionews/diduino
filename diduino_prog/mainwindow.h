@@ -50,6 +50,10 @@ private slots:
 
     void on_options_but_clicked();
 
+    void on_checkBox_stateChanged(int arg1);
+
+    void on_help_but_clicked();
+
 signals:
 
   void chipReaded();
