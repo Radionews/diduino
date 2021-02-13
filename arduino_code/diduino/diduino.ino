@@ -1,6 +1,6 @@
 //---Radionews---https://github.com/Radionews
 //---Walhi---https://github.com/walhi
-//---01.02.2021---
+//---13.02.2021---
 
 #define ST A3
 #define SH A2
@@ -286,7 +286,7 @@ void cs_set(chipType chip, bool state){
       digitalWrite(CS,state);
     break;
     case RT14:
-      //digitalWrite(CS,state);
+      digitalWrite(CS,state);
     break;
     case RT5:
       if(state){
@@ -328,9 +328,7 @@ byte write_byte(uint16_t addr, byte in){
     }
     else{  
   
-      if((((in>>j)&0x01)>(!digitalRead(READ))) && chip!= RT5){
-        //устанавливаем нужный сигнал на линии(ях) CS
-        
+      if((((in>>j)&0x01)>(!digitalRead(READ))) && chip!= RT5){        
         for(int16_t k=0;k<number_of_impulses;k++){
           cs_set(chip,false); 
           digitalWrite(WRITE,HIGH);
@@ -343,6 +341,22 @@ byte write_byte(uint16_t addr, byte in){
           else                          {delay(length_of_impulse*5/1000);}
           
           if(((in>>j)&0x01) == (!digitalRead(READ))) break;
+        }
+      }
+      
+      if((((in>>j)&0x01)<(!digitalRead(READ))) && chip == RT5){
+        for(int16_t k=0;k<number_of_impulses;k++){
+          cs_set(chip,false); 
+          digitalWrite(WRITE,HIGH);
+          if(length_of_impulse<1000){delayMicroseconds(length_of_impulse);}
+          else                      {delay(length_of_impulse/1000);}
+          digitalWrite(WRITE,LOW);
+          cs_set(chip,true);
+          
+          if((length_of_impulse*5)<1000){delayMicroseconds(length_of_impulse*5);}
+          else                          {delay(length_of_impulse*5/1000);}
+          
+          if(((in>>j)&0x01) == (digitalRead(READ))) break;
         }
       } 
     }

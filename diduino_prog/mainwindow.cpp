@@ -155,6 +155,7 @@ void MainWindow::closeSerialPort()
         updatePortsTimer.start();
         ui->online_but->setEnabled(false);
         QObject::disconnect(serialDataConnection);
+
     }
 }
 
@@ -175,6 +176,7 @@ void MainWindow::ic_version_select(QString boot_name){
         QString version = boot_name.right(boot_name.indexOf("VER", 0)-3);
         log("DIDUINO found version " + version);
         //при добавлении новой версии железа тут необходимо реализовать настройку по версиям
+        ui->ic_comboBox->clear();
         ui->ic_comboBox->addItem("K155RE3");
         ui->ic_comboBox->addItem("KR556RT4");
         ui->ic_comboBox->addItem("KR556RT14");
