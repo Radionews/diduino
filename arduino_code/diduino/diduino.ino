@@ -1,6 +1,6 @@
 //---Radionews---https://github.com/Radionews
 //---Walhi---https://github.com/walhi
-//---13.02.2021---
+//---16.02.2021---
 
 #define ST A3
 #define SH A2
@@ -15,7 +15,7 @@
 #define DS_DATA 9
 
 #define BUF_LEN 8
-
+#define LED 13
 /* Voltage control (for programming chips) */
 #define voltageControl A4
 #define rTop 10000.0
@@ -49,8 +49,8 @@ void select_chip (chipType new_chip);
 void cs_set(chipType chip, bool state);
 float get_voltage (void);
 void load_shift();
-byte read_byte(uint16_t in);
-byte write_byte(uint16_t addr, byte in);
+void read_byte(uint16_t in);
+void write_byte(uint16_t addr, byte in);
 
 //---var---
 unsigned char data_array[512];
@@ -94,6 +94,9 @@ void setup() {
   digitalWrite(AR1,LOW);
   digitalWrite(AR2,LOW);
 
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED,LOW);
+  
   Serial.begin(115200);
   Serial.println("ARDUINO PROGRAMMER DIDUINO VER1.0");
 
@@ -107,8 +110,8 @@ void loop() {
         break;
       }
       for (i = start_address; i <= end_address; i++) {
-        uint8_t data = read_byte(i);
-        Serial.write(&data, sizeof(data));
+        read_byte(i);
+        Serial.write(&out, sizeof(out));
         if (i == end_address) break; // Защита от переполнения uint16
       }
       delay(100);
@@ -123,12 +126,13 @@ void loop() {
       for (i = start_address; i <= end_address; i++) {
         while(Serial.available()==0);
         r_data = Serial.read();
-        count++;
-        r_data = write_byte(i, r_data);
-        Serial.write(r_data);
+        //count++;
+        write_byte(i, r_data);
+        Serial.write(&out, sizeof(out));
         if (i == end_address) break;
       }
       Serial.print("Write success.");
+      delay(100);
       mode = WAIT;
       break;
       
@@ -243,7 +247,36 @@ void load_shift(){
   digitalWrite(SH, HIGH);
 }
 
-byte read_byte(uint16_t in){
+void cs_set(chipType chip, bool state){
+  switch(chip){
+    case NONE:
+    break;
+    case RE3:
+      digitalWrite(CS,state);
+    break;
+    case RT4:
+      digitalWrite(CS,state);
+    break;
+    case RT14:
+      digitalWrite(CS,state);
+    break;
+    case RT5:
+      if(state){
+        digitalWrite(CS,HIGH);
+        shift_data |= (1<<12)|(1<<11);
+        shift_data &= ~(1<<10);
+      }
+      else{
+        digitalWrite(CS,LOW);
+        shift_data |= (1<<10);
+        shift_data &= ~((1<<12)|(1<<11));
+      }
+      
+    break; 
+  }
+}
+
+void read_byte(uint16_t in){
   digitalWrite(WRITE,LOW);
   
   shift_data = in;
@@ -263,57 +296,29 @@ byte read_byte(uint16_t in){
     else                {digitalWrite(AR2,LOW);}
 
     delay(1);
+    digitalWrite(LED, !digitalRead(LED));
+    
     if(((chip==RT4)||(chip == RT14))&&(j>3)){
-      return out;
-    }
-    else{
-      temp = !digitalRead(READ);
-      out |= temp<<j;
+      return;
     }
     
-  }
-  return out;
-}
-
-void cs_set(chipType chip, bool state){
-  switch(chip){
-    case NONE:
-    break;
-    case RE3:
-      digitalWrite(CS,state);
-    break;
-    case RT4:
-      digitalWrite(CS,state);
-    break;
-    case RT14:
-      digitalWrite(CS,state);
-    break;
-    case RT5:
-      if(state){
-        digitalWrite(CS,HIGH);
-        shift_data |= (1<<9)|(1<<12)|(1<<11);
-        shift_data &= ~(1<<10);
-      }
-      else{
-        digitalWrite(CS,LOW);
-      }
-      
-    break; 
+    temp = !digitalRead(READ);
+    out |= temp<<j;    
   }
 }
 
-byte write_byte(uint16_t addr, byte in){
+void write_byte(uint16_t addr, byte in){
   //на всякий случай перед манипуляциями опускаем ножку записи, мало ли она была чем то поднята
   digitalWrite(WRITE,LOW);
   
-  //линия(ии) cs на чтение
-  cs_set(chip,true);
-  
   //выставляем адрес ячейки
   shift_data = addr;
+  //линия(ии) cs на чтение
+  cs_set(chip,true);
   load_shift();
   
   out = 0;
+  temp = 0;
   for(j=0;j<8;j++){
     //выставляем бит в ячейке
     if((j&0x01)==1)     digitalWrite(AR0,HIGH);
@@ -323,46 +328,50 @@ byte write_byte(uint16_t addr, byte in){
     if(((j>>2)&0x01)==1)digitalWrite(AR2,HIGH);
     else                digitalWrite(AR2,LOW);
     delay(1);
+    digitalWrite(LED, !digitalRead(LED));
     if(((chip==RT4)||(chip == RT14))&&(j>3)){
-      return out;
+      return;
     }
-    else{  
-  
-      if((((in>>j)&0x01)>(!digitalRead(READ))) && chip!= RT5){        
-        for(int16_t k=0;k<number_of_impulses;k++){
-          cs_set(chip,false); 
-          digitalWrite(WRITE,HIGH);
-          if(length_of_impulse<1000){delayMicroseconds(length_of_impulse);}
-          else                      {delay(length_of_impulse/1000);}
-          digitalWrite(WRITE,LOW);
-          cs_set(chip,true);
-          
-          if((length_of_impulse*5)<1000){delayMicroseconds(length_of_impulse*5);}
-          else                          {delay(length_of_impulse*5/1000);}
-          
-          if(((in>>j)&0x01) == (!digitalRead(READ))) break;
-        }
+
+    if((((in>>j)&0x01)>(!digitalRead(READ))) && chip!= RT5){
+             
+      for(int16_t k=0;k<number_of_impulses;k++){
+        cs_set(chip,false);
+        load_shift();
+        digitalWrite(WRITE,HIGH);
+        if(length_of_impulse<1000){delayMicroseconds(length_of_impulse);}
+        else                      {delay(length_of_impulse/1000);}
+        digitalWrite(WRITE,LOW);
+        cs_set(chip,true);
+        load_shift();
+        if((length_of_impulse*5)<1000){delayMicroseconds(length_of_impulse*5);}
+        else                          {delay(length_of_impulse*5/1000);}
+
+        if(((in>>j)&0x01) == (!digitalRead(READ))) {break;}
       }
+    }
       
-      if((((in>>j)&0x01)<(!digitalRead(READ))) && chip == RT5){
-        for(int16_t k=0;k<number_of_impulses;k++){
-          cs_set(chip,false); 
-          digitalWrite(WRITE,HIGH);
-          if(length_of_impulse<1000){delayMicroseconds(length_of_impulse);}
-          else                      {delay(length_of_impulse/1000);}
-          digitalWrite(WRITE,LOW);
-          cs_set(chip,true);
-          
-          if((length_of_impulse*5)<1000){delayMicroseconds(length_of_impulse*5);}
-          else                          {delay(length_of_impulse*5/1000);}
-          
-          if(((in>>j)&0x01) == (digitalRead(READ))) break;
-        }
+    if((((in>>j)&0x01)<(!digitalRead(READ))) && chip == RT5){
+      
+      for(int16_t k=0;k<number_of_impulses;k++){
+        cs_set(chip,false);
+        load_shift();
+        digitalWrite(WRITE,HIGH);
+        if(length_of_impulse<1000){delayMicroseconds(length_of_impulse);}
+        else                      {delay(length_of_impulse/1000);}
+        digitalWrite(WRITE,LOW);
+        cs_set(chip,true);
+        load_shift();
+        if((length_of_impulse*5)<1000){delayMicroseconds(length_of_impulse*5);}
+        else                          {delay(length_of_impulse*5/1000);}
+
+        if(((in>>j)&0x01) == (!digitalRead(READ))) {break;}
       } 
     }
-    out |= (!digitalRead(READ))<<j;
+    
+    temp = !digitalRead(READ);
+    out |= temp<<j;
   }
-  return out;
 }
 
 float get_voltage (void) {

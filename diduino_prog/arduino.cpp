@@ -107,26 +107,6 @@ void arduino::readChip()
     serialPort->clear();
     serialDataConnection = QObject::connect(serialPort, SIGNAL(readyRead()), this, SLOT(recieve()));
     send("r");
-    /*
-    static uint32_t count = 0;
-    const QByteArray data = serialPort->readAll();
-    if (data.count()){
-        memcpy(&(bufWork.data())[count], data.data(), data.count());
-        count += data.count();
-    }
-    ui->progressBar->setValue(count);
-    if (count >= bufSize){
-        ui->progressBar->setValue(bufSize);
-        QObject::disconnect(serialDataConnection);
-        updateButtons(true, true);
-
-        log(QString("Readed %1 bytes.").arg(count));
-        count = 0;
-
-        emit readComplete(data);
-        //emit bufferUpdated();
-    }
-*/
 }
 
 void arduino::writeChip(QByteArray data)
@@ -143,46 +123,6 @@ void arduino::writeChip(QByteArray data)
     QByteArray temp;
     temp.append(buffer_w[0]);
     send(temp);
-    /*for (uint32_t i = 0; i <= data.length(); i++){
-        buf.append(data[i]);
-        send(buf);
-        serialPort->waitForBytesWritten(500);
-        buf.clear();
-    }*/
-    /*
-    QByteArray ack;
-    QByteArray buf;
-    buf.clear();
-
-    // +1 нужен для записи последнего блока
-    for (uint32_t i = 0; i <= bufSize; i++){
-        buf.append(data[i]);
-        if (i && ((i & 0xf) == 0)){
-            // 16 bytes block
-            send(buf);
-            buf.clear();
-            ack = serialPort->readAll();
-            ack.clear();
-
-            if (bufSize == 2048){
-                // Correct time to 27C16
-                while (serialPort->waitForReadyRead(320)){
-                    ack.append(serialPort->readAll());
-                }
-            } else {
-                while (serialPort->waitForReadyRead(20)){
-                    ack.append(serialPort->readAll());
-                }
-            }
-            if (ack.indexOf("Complete block ") == -1){
-                uint16_t address = 0;
-                uint8_t value = 0xff;
-                emit writeError(address, value);
-                return;
-            }
-        }
-    }
-    emit writeComplete();*/
 }
 
 void arduino::voltageMesurment(bool enable)

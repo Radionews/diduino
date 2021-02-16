@@ -24,7 +24,9 @@ private slots:
     void resizeBuffers(uint32_t size);
     void verifyData();
     void checkClear(QByteArray buff);
+    void checkClear_2(QByteArray buff);
     void showBuf();
+    void showFile();
     void reload_ports();
     void showVoltage();
     void chipOperationProgressBar(uint32_t value);
@@ -53,6 +55,12 @@ private slots:
     void on_checkBox_stateChanged(int arg1);
 
     void on_help_but_clicked();
+
+    void on_scan_ic_but_clicked();
+
+    void on_tab_2_but_clicked();
+
+    void on_tab_1_but_clicked();
 
 signals:
 
@@ -83,6 +91,7 @@ private:
     uint16_t first_line = 0;
 
     QByteArray bufWork;
+    QByteArray bufFile;
     QByteArray bufCheck;
 
     void log(QString str);

@@ -383,12 +383,14 @@ public:
         horizontalLayout->setContentsMargins(-1, -1, -1, 0);
         tab_1_but = new QPushButton(centralwidget);
         tab_1_but->setObjectName(QString::fromUtf8("tab_1_but"));
+        tab_1_but->setEnabled(false);
 
         horizontalLayout->addWidget(tab_1_but);
 
         tab_2_but = new QPushButton(centralwidget);
         tab_2_but->setObjectName(QString::fromUtf8("tab_2_but"));
         tab_2_but->setEnabled(false);
+        tab_2_but->setFlat(false);
 
         horizontalLayout->addWidget(tab_2_but);
 
@@ -398,6 +400,7 @@ public:
 
         label = new QLabel(centralwidget);
         label->setObjectName(QString::fromUtf8("label"));
+        label->setEnabled(true);
 
         horizontalLayout->addWidget(label);
 
@@ -661,8 +664,8 @@ public:
         lineEdit_4->setText(QCoreApplication::translate("MainWindow", "12", nullptr));
         checkBox->setText(QCoreApplication::translate("MainWindow", "\320\260\320\262\321\202\320\276", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow", "\320\236\321\202\320\277\321\200\320\260\320\262\320\270\321\202\321\214 \320\275\320\260\321\201\321\202\321\200\320\276\320\271\320\272\320\270", nullptr));
-        tab_1_but->setText(QCoreApplication::translate("MainWindow", "\320\237\321\200\320\276\321\210\320\270\320\262\320\272\320\260", nullptr));
-        tab_2_but->setText(QCoreApplication::translate("MainWindow", "\320\237\321\200\320\276\321\210\320\270\320\262\320\272\320\260", nullptr));
+        tab_1_but->setText(QCoreApplication::translate("MainWindow", "\320\237\320\260\320\274\321\217\321\202\321\214 \320\274\320\270\320\272\321\200\320\276\321\201\321\205\320\265\320\274\321\213", nullptr));
+        tab_2_but->setText(QCoreApplication::translate("MainWindow", "\320\236\321\202\320\272\321\200\321\213\321\202\320\260\321\217 \320\277\321\200\320\276\321\210\320\270\320\262\320\272\320\260", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "FileName.bin", nullptr));
         offset->setText(QCoreApplication::translate("MainWindow", "Offset", nullptr));
         offset_row->setText(QString());

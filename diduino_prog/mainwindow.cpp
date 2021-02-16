@@ -29,6 +29,29 @@ void MainWindow::showBuf()
     ui->decoded->setText(temp2);
 }
 //--------------------------------------------
+
+//----функция прорисовки открытой прошивки на экране------
+void MainWindow::showFile()
+{
+    QString temp = "", temp2 = "";
+    for(unsigned int i = first_line; i<=bufSize/16; i++){
+        temp += QString("%1").arg(i*10, 7, 10, QChar('0')) + "\n";
+    }
+    ui->offset_row->setText(temp);
+    temp = "";
+    for(unsigned int i = first_line*16; i<bufSize; i++){
+        temp += QString("%1").arg((int(bufFile[i])&0xff), 2, 16, QChar('0')) + " ";
+
+
+        if((int(bufFile[i])&0xff)>=0x20){    temp2 += QString::fromLocal8Bit(QByteArray::fromHex(QString::number((int(bufFile[i])&0xff),16).toLocal8Bit()));}
+        else{                 temp2 += ".";}
+
+        if (i%16 == 15){ temp += "\n"; temp2 += "\n";}
+    }
+    ui->text_out->setText(temp);
+    ui->decoded->setText(temp2);
+}
+//--------------------------------------------
 void MainWindow::log(QString str)
 {
     ui->status_text_out->append(str);
@@ -69,6 +92,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->checkBox->hide();
     ui->pushButton->hide();
     ui->horizontalSlider->hide();
+
+    ui->label->hide();
 
     QObject::connect(this, SIGNAL(bufferUpdated()), this, SLOT(showBuf()));
     bufSize = 32;
@@ -128,7 +153,7 @@ void MainWindow::openSerialPort(QString path)
         }
 
         if (readData.indexOf("ARDUINO PROGRAMMER") != -1){
-            log(QString("Connect successful"));
+            log(QString("Программатор обнаружен"));
             mArduino = new arduino(serialPort);
             //mArduino->selectChip(arduino::NONE);
             ic_version_select(readData/*.right(readData.indexOf("ARDUINO PROGRAMMER", 0)-18)*/);
@@ -136,11 +161,11 @@ void MainWindow::openSerialPort(QString path)
 
         }
         else{
-            log(QString("Arduino programmer not found."));
+            log(QString("Программатор не найден"));
             closeSerialPort();
         }
     } else {
-        QMessageBox::critical(this, tr("Error"), serialPort->errorString());
+        QMessageBox::critical(this, tr("Ошибка"), serialPort->errorString());
     }
 }
 
@@ -150,7 +175,7 @@ void MainWindow::closeSerialPort()
 
     if (serialPort->isOpen()){
         serialPort->close();
-        log(QString("Disconnect..."));
+        log(QString("Отключение..."));
         ui->openPort->setText("Open");
         updatePortsTimer.start();
         ui->online_but->setEnabled(false);
@@ -174,7 +199,7 @@ void MainWindow::on_openPort_clicked()
 void MainWindow::ic_version_select(QString boot_name){
     if(boot_name.indexOf("DIDUINO")!=-1){
         QString version = boot_name.right(boot_name.indexOf("VER", 0)-3);
-        log("DIDUINO found version " + version);
+        log("DIDUINO найдена. версия " + version);
         //при добавлении новой версии железа тут необходимо реализовать настройку по версиям
         ui->ic_comboBox->clear();
         ui->ic_comboBox->addItem("K155RE3");
@@ -191,10 +216,10 @@ void MainWindow::ic_version_select(QString boot_name){
 void MainWindow::on_ic_comboBox_currentIndexChanged(const QString &arg1)
 {
     QObject::connect(mArduino, SIGNAL(chipUpdated(uint32_t)), this, SLOT(resizeBuffers(uint32_t)));
-    if (arg1 == "K155RE3")  {mArduino->selectChip(arduino::RE3); log("K155RE3 is selected");  ui->verticalScrollBar->setMaximum(1);}
-    if (arg1 == "KR556RT4") {mArduino->selectChip(arduino::RT4); log("KR556RT4 is selected"); ui->verticalScrollBar->setMaximum(15);}
-    if (arg1 == "KR556RT14"){mArduino->selectChip(arduino::RT14);log("KR556RT14 is selected");ui->verticalScrollBar->setMaximum(124);}
-    if (arg1 == "KR556RT5") {mArduino->selectChip(arduino::RT5); log("KR556RT5 is selected"); ui->verticalScrollBar->setMaximum(31);}
+    if (arg1 == "K155RE3")  {mArduino->selectChip(arduino::RE3); log("Выбрана К155РЕ3");  ui->verticalScrollBar->setMaximum(1);}
+    if (arg1 == "KR556RT4") {mArduino->selectChip(arduino::RT4); log("Выбрана КR556РТ4"); ui->verticalScrollBar->setMaximum(15);}
+    if (arg1 == "KR556RT14"){mArduino->selectChip(arduino::RT14);log("Выбрана КР556РТ14");ui->verticalScrollBar->setMaximum(124);}
+    if (arg1 == "KR556RT5") {mArduino->selectChip(arduino::RT5); log("Выбрана КР556РТ5"); ui->verticalScrollBar->setMaximum(31);}
 }
 
 void MainWindow::resizeBuffers(uint32_t size)
@@ -204,30 +229,59 @@ void MainWindow::resizeBuffers(uint32_t size)
     bufCheck.resize(bufSize);
     bufCheck.fill(0);
     for(uint32_t i = 0; i<bufSize; i++){
-        if(mArduino->get_chip_selected == mArduino->RT5){ bufWork[i] = 1;   }
-        else{                                             bufWork[i] = 0;   }
+        if(mArduino->get_chip_selected == mArduino->RT5){ bufWork[i] = 0xff;   }
+        else{                                             bufWork[i] = 0x00;   }
     }
+
     emit bufferUpdated();
 }
 
 void MainWindow::checkClear(QByteArray buff)
 {
-    uint32_t count;
+    uint32_t count = 0;
     QObject::disconnect(progressBarConnection);
     ui->progressBar->setValue(ui->progressBar->maximum());
     QObject::disconnect(checkClearConnection);
     for (count = 0; count < buff.length(); count++){
-        if(bufWork[count] != (char)0xff){
-        //if (((bufWork[count] != (char)0xff)&&(mArduino->get_chip_selected == mArduino->RT5))||((bufWork[count] != (char)0xff)&&(mArduino->get_chip_selected == mArduino->RT5))){
-            log(QString("Chip not clear. Check before write."));
+        if((buff[count] != (char)0x00)&&(mArduino->get_chip_selected != mArduino->RT5)){
+            log(QString("Чип не пустой. Проверьте возможность программирования перед прожигом!"));
+            break;
+        }
+        if((buff[count] != (char)0xff)&&(mArduino->get_chip_selected == mArduino->RT5)){
+            log(QString("Чип не пустой. Проверьте возможность программирования перед прожигом!"));
             break;
         }
     }
     if (count >= bufSize)
-        log(QString("Chip clear."));
+        log(QString("Чип чист"));
     bufWork = buff;
     if(verify_data) verifyData();
     emit bufferUpdated();
+}
+
+void MainWindow::checkClear_2(QByteArray buff)
+{
+    uint32_t count = 0;
+    uint32_t error_bit = 0;
+    QObject::disconnect(progressBarConnection);
+    ui->progressBar->setValue(ui->progressBar->maximum());
+    ui->progressBar->setMaximum(buff.length());
+    QObject::disconnect(checkClearConnection);
+    for (count = 0; count < buff.length(); count++){
+        for(uint8_t bit = 0; bit<8; bit++){
+            if((((buff[count]>>bit)&0x01) == 1)&&(((bufCheck[count]>>bit)&0x01) == 0)&&(mArduino->get_chip_selected != mArduino->RT5)){
+                error_bit++;
+            }
+
+            if((((buff[count]>>bit)&0x01) == 0)&&(((bufCheck[count]>>bit)&0x01) == 1)&&(mArduino->get_chip_selected == mArduino->RT5)){
+                error_bit++;
+            }
+        }
+        ui->progressBar->setValue(count);
+    }
+    ui->progressBar->setValue(ui->progressBar->maximum());
+    if (error_bit!=0)
+        log(QString("Чип не подойдет для записи! Вставьте другой чип!"));
 }
 
 void MainWindow::verifyData()
@@ -240,10 +294,12 @@ void MainWindow::verifyData()
         if(bufWork[i] != bufCheck[i]) errors_count++;
         ui->progressBar->setValue(i);
     }
-    if(errors_count == 0) { log(QString("Verification successful."));}
+    ui->progressBar->setValue(bufSize);
+
+    if(errors_count == 0) { log(QString("Данные совпадают!"));}
     else {
-        log(QString("Verification failed."));
-        log(QString("Errors: %1.").arg(errors_count));
+        log(QString("Данные не сопадают!"));
+        log(QString("Ошибка: %1.").arg(errors_count));
     }
 }
 
@@ -255,11 +311,24 @@ void MainWindow::showVoltage()
 void MainWindow::on_read_ic_but_clicked()
 {
     if(serialPort->isOpen()){
+
+        for(uint32_t i = 0; i<bufSize; i++){
+            if(mArduino->get_chip_selected == mArduino->RT5){ bufWork[i] = 0xff;   }
+            else{                                             bufWork[i] = 0x00;   }
+        }
+
         ui->progressBar->setMaximum(mArduino->getChipSize());
-        log(QString("Reading %1 bytes from chip...").arg(mArduino->getChipSize()));
+        log(QString("Чтение %1 байт из чипа...").arg(mArduino->getChipSize()));
         mArduino->readChip();
+        ui->tab_1_but->setEnabled(true);
+
         progressBarConnection = QObject::connect(mArduino, SIGNAL(blockComplete(uint32_t)), this, SLOT(chipOperationProgressBar(uint32_t)));
         checkClearConnection = QObject::connect(mArduino, SIGNAL(readComplete(QByteArray)), this, SLOT(checkClear(QByteArray)));
+
+        ui->tab_1_but->setFlat(true);
+        if(ui->tab_2_but->isEnabled()){
+            ui->tab_2_but->setFlat(false);
+        }
     }
     else{
         log(QString("Программатор не подключен!"));
@@ -268,29 +337,78 @@ void MainWindow::on_read_ic_but_clicked()
 
 void MainWindow::on_flash_ic_but_clicked()
 {
-    ui->progressBar->setMaximum(mArduino->getChipSize());
-    log(QString("Burn %1 bytes to chip...").arg(mArduino->getChipSize()));
-    mArduino->writeChip(bufWork);
-    progressBarConnection = QObject::connect(mArduino, SIGNAL(blockComplete(uint32_t)), this, SLOT(chipOperationProgressBar(uint32_t)));
-    checkClearConnection = QObject::connect(mArduino, SIGNAL(readComplete(QByteArray)), this, SLOT(checkClear(QByteArray)));
+    if((serialPort->isOpen())&&(bufFile.length() != -1)){
+        ui->progressBar->setMaximum(mArduino->getChipSize());
+        log(QString("Прожиг %1 байт в чип...").arg(mArduino->getChipSize()));
+
+        mArduino->writeChip(bufFile);
+        progressBarConnection = QObject::connect(mArduino, SIGNAL(blockComplete(uint32_t)), this, SLOT(chipOperationProgressBar(uint32_t)));
+        checkClearConnection = QObject::connect(mArduino, SIGNAL(readComplete(QByteArray)), this, SLOT(checkClear(QByteArray)));
+
+        ui->tab_1_but->setFlat(true);
+        if(ui->tab_2_but->isEnabled()){
+            ui->tab_2_but->setFlat(false);
+        }
+    }
+    else{
+        log(QString("Программатор не подключен!"));
+    }
 }
 
 void MainWindow::on_check_ic_but_clicked()
 {//запуск сравнения данных на чипе и загруженных в основной буфер
 
-    if(serialPort->isOpen()){
+    if((serialPort->isOpen())&&(!bufWork.isEmpty())){
+
         bufCheck.clear();
         bufCheck = bufWork;
+
+        for(uint32_t i = 0; i<bufSize; i++){
+            if(mArduino->get_chip_selected == mArduino->RT5){ bufWork[i] = 0xff;   }
+            else{                                             bufWork[i] = 0x00;   }
+        }
         verify_data = true;
 
+        log(QString("Сравнение буфера памяти микросхемы с подключенной микросхемой"));
         ui->progressBar->setMaximum(mArduino->getChipSize());
-        log(QString("Reading %1 bytes from chip...").arg(mArduino->getChipSize()));
+        log(QString("Чтение %1 байт из чипа...").arg(mArduino->getChipSize()));
         mArduino->readChip();
         progressBarConnection = QObject::connect(mArduino, SIGNAL(blockComplete(uint32_t)), this, SLOT(chipOperationProgressBar(uint32_t)));
         checkClearConnection = QObject::connect(mArduino, SIGNAL(readComplete(QByteArray)), this, SLOT(checkClear(QByteArray)));
+
+        ui->tab_1_but->setFlat(true);
+        if(ui->tab_2_but->isEnabled()){
+            ui->tab_2_but->setFlat(false);
+        }
     }
     else{
         log(QString("Программатор не подключен!"));
+    }
+
+}
+
+void MainWindow::on_scan_ic_but_clicked()
+{//проверка возможности прошивки в микросхему
+    if((serialPort->isOpen())&&(!bufFile.isEmpty())){
+        resizeBuffers(bufSize);
+        bufCheck.clear();
+        bufCheck = bufFile;
+        verify_data = true;
+
+        log(QString("Сравнение открытой прошивки с подключенной микросхемой"));
+        ui->progressBar->setMaximum(mArduino->getChipSize());
+        log(QString("Чтение %1 байт из чипа...").arg(mArduino->getChipSize()));
+        mArduino->readChip();
+        progressBarConnection = QObject::connect(mArduino, SIGNAL(blockComplete(uint32_t)), this, SLOT(chipOperationProgressBar(uint32_t)));
+        checkClearConnection = QObject::connect(mArduino, SIGNAL(readComplete(QByteArray)), this, SLOT(checkClear(QByteArray)));
+
+        ui->tab_1_but->setFlat(true);
+        if(ui->tab_2_but->isEnabled()){
+            ui->tab_2_but->setFlat(false);
+        }
+    }
+    else{
+        log(QString("Программатор не подключен или файл прошивки не открыт!"));
     }
 
 }
@@ -301,7 +419,7 @@ void MainWindow::on_check_ic_but_clicked()
 void MainWindow::on_save_file_but_clicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Save buffer"), "",
+                                                    tr("Сохранить буфер"), "",
                                                     tr("Binary (*.bin);;All Files (*)"));
 
     if (fileName.isEmpty())
@@ -312,20 +430,20 @@ void MainWindow::on_save_file_but_clicked()
         }
         QFile file(fileName);
         if (!file.open(QIODevice::WriteOnly)) {
-            QMessageBox::information(this, tr("Unable to open file"),
+            QMessageBox::information(this, tr("Невозможно открыть файл!"),
                                      file.errorString());
             return;
         }
         file.write(bufWork);
         file.close();
-        log(QString("Buffer saved to %1 file").arg(fileName));
+        log(QString("Буфер сохранен в файл %1").arg(fileName));
     }
 }
 
 void MainWindow::on_open_file_but_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
-                        tr("Open binary to buffer"), "",
+                        tr("Открыть двоичный файл"), "",
                         tr("Binary (*.bin);;All Files (*)"));
 
         if (fileName.isEmpty())
@@ -333,29 +451,38 @@ void MainWindow::on_open_file_but_clicked()
         else {
             QFile file(fileName);
             if (!file.open(QIODevice::ReadOnly)) {
-                QMessageBox::information(this, tr("Unable to open file"),
+                QMessageBox::information(this, tr("Невозможно открыть файл!"),
                                          file.errorString());
                 return;
             }
-            bufWork.clear();
-            bufCheck.fill(0);
-            bufWork.append(file.readAll());
-            log(QString("Load from %1 file").arg(fileName));
-            log(QString("Readed %1 bytes").arg(bufWork.count()));
-            if ((uint32_t)bufWork.count() < bufSize) {
-                bufWork.append((bufSize - bufWork.count()), 0xff);
+            bufFile.clear();
+            bufFile.fill(0);
+            bufFile.append(file.readAll());
+            log(QString("Чтение из файла %1").arg(fileName));
+            log(QString("Прочитано %1 байт").arg(bufFile.count()));
+            if ((uint32_t)bufFile.count() < bufSize) {
+                bufFile.append((bufSize - bufFile.count()), 0xff);
             }
-            if ((uint32_t)bufWork.count() < bufSize) {
-                log(QString("Deleated %1 bytes").arg(bufWork.count() - bufSize));
-                bufWork.resize(bufSize);
+            if ((uint32_t)bufFile.count() < bufSize) {
+                log(QString("Удалено %1 байт").arg(bufFile.count() - bufSize));
+                bufFile.resize(bufSize);
             }
             //bufferClear = false;
 
             //updateButtons(true, true);
 
-            emit bufferUpdated();
+            ui->tab_2_but->setEnabled(true);
+            ui->label->setText(fileName);
+            ui->label->show();
+
+            showFile();
+            ui->tab_2_but->setFlat(true);
+            if(ui->tab_1_but->isEnabled()){
+                ui->tab_1_but->setFlat(false);
+            }
         }
 }
+
 //-----------------------------------------
 //*****************************************
 //-----------------------------------------
@@ -433,4 +560,23 @@ void MainWindow::on_help_but_clicked()
     QMessageBox::about(0, "Дидuino Программатор", "Программатор для советских ППЗУ: К155РЕ3, КР556РТ4, КР556РТ14, КР556РТ5.\n\nВерсия программы: 0.1\n\nСписок людей поддержавших проект:\n"
                        "U-M, walhi, Kavka_TSR, Voron_Kor, Dmitry Saychenko, Михаил Царёв, Кошкин Хвост,\n"
                        "Сергей Тюрюханов, Александр Драга, Андрей С., кот Обормот, Эскобар");
+}
+
+
+void MainWindow::on_tab_2_but_clicked()
+{
+    showFile();
+    if(ui->tab_1_but->isEnabled()){
+        ui->tab_2_but->setFlat(true);
+        ui->tab_1_but->setFlat(false);
+    }
+}
+
+void MainWindow::on_tab_1_but_clicked()
+{
+    showBuf();
+    if(ui->tab_2_but->isEnabled()){
+        ui->tab_1_but->setFlat(true);
+        ui->tab_2_but->setFlat(false);
+    }
 }

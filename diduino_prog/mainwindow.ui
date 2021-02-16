@@ -507,8 +507,11 @@
             </property>
             <item>
              <widget class="QPushButton" name="tab_1_but">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
-               <string>Прошивка</string>
+               <string>Память микросхемы</string>
               </property>
              </widget>
             </item>
@@ -518,7 +521,10 @@
                <bool>false</bool>
               </property>
               <property name="text">
-               <string>Прошивка</string>
+               <string>Открытая прошивка</string>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -540,6 +546,9 @@
             </item>
             <item>
              <widget class="QLabel" name="label">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="text">
                <string>FileName.bin</string>
               </property>
