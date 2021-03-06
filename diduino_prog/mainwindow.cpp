@@ -580,3 +580,64 @@ void MainWindow::on_tab_1_but_clicked()
         ui->tab_2_but->setFlat(false);
     }
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    if(serialPort->isOpen()){
+        QByteArray send_temp;
+        if(ui->checkBox->isChecked()){
+            send_temp.append('o');
+            send_temp.append(0xE8);
+            send_temp.append(0x03);
+            send_temp.append(0x28);
+            send_temp.append((char)NULL);
+            send_temp.append(0x05);
+            send_temp.append((char)NULL);
+            serialPort->write(send_temp);
+            send_temp.clear();
+        }
+
+        send_temp.append('o');
+        send_temp.append((uint8_t)(ui->lineEdit_2->text().toInt()&0xFF));
+        send_temp.append((uint8_t)((ui->lineEdit_2->text().toInt()>>8)&0xFF));
+
+        send_temp.append((uint8_t)(ui->lineEdit->text().toInt()&0xFF));
+        send_temp.append((uint8_t)((ui->lineEdit->text().toInt()>>8)&0xFF));
+
+        send_temp.append((uint8_t)(ui->lineEdit_3->text().toInt()&0xFF));
+
+        send_temp.append((uint8_t)ui->horizontalSlider->value());
+
+        serialPort->write(send_temp);
+        send_temp.clear();
+
+        get_U = true;
+        read_temp.clear();
+        QObject::disconnect(serialDataConnection);
+        serialDataConnection = QObject::connect(serialPort, SIGNAL(readyRead()), this, SLOT(recieve_U()));
+
+    }
+}
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    ui->lineEdit_4->setText(QString::number(power_U[value]));
+}
+
+void MainWindow::recieve_U()
+{
+    if(get_U == true){
+        QByteArray send_temp;
+        send_temp.append('v');
+        serialPort->write(send_temp);
+        get_U = false;
+        return;
+    }
+    while (!serialPort->atEnd()) {
+        read_temp.append(serialPort->read(1));
+    }
+    if(read_temp.indexOf("VOLTAGE: ")!=-1){
+        ui->lineEdit_4->setText(read_temp.mid(read_temp.indexOf("VOLTAGE: ")+9,4));
+        QObject::disconnect(serialDataConnection);
+    }
+}

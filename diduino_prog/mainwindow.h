@@ -30,7 +30,7 @@ private slots:
     void reload_ports();
     void showVoltage();
     void chipOperationProgressBar(uint32_t value);
-
+    void recieve_U();
     void on_openPort_clicked();
 
 
@@ -62,6 +62,10 @@ private slots:
 
     void on_tab_1_but_clicked();
 
+    void on_pushButton_clicked();
+
+    void on_horizontalSlider_valueChanged(int value);
+
 signals:
 
   void chipReaded();
@@ -87,12 +91,15 @@ private:
     bool verify_data = false;
     bool bufferClear = true;
     bool setting_view = false;
+    bool get_U = false;
     uint32_t bufSize = 0;
     uint16_t first_line = 0;
+    double power_U[8] = {11.6,12.3,12.7,13,13.5,14,14.5,15};
 
     QByteArray bufWork;
     QByteArray bufFile;
     QByteArray bufCheck;
+    QByteArray read_temp;
 
     void log(QString str);
     void openSerialPort(QString path);

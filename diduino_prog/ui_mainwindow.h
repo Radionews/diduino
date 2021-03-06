@@ -345,14 +345,16 @@ public:
         lineEdit_4->setObjectName(QString::fromUtf8("lineEdit_4"));
         lineEdit_4->setEnabled(false);
         lineEdit_4->setMinimumSize(QSize(50, 0));
-        lineEdit_4->setReadOnly(false);
+        lineEdit_4->setReadOnly(true);
 
         horizontalLayout_5->addWidget(lineEdit_4);
 
         horizontalSlider = new QSlider(centralwidget);
         horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
-        horizontalSlider->setMinimumSize(QSize(50, 0));
+        horizontalSlider->setMinimumSize(QSize(100, 0));
+        horizontalSlider->setMaximum(7);
         horizontalSlider->setOrientation(Qt::Horizontal);
+        horizontalSlider->setTickPosition(QSlider::TicksBothSides);
 
         horizontalLayout_5->addWidget(horizontalSlider);
 
@@ -652,13 +654,13 @@ public:
         options_but->setText(QString());
         help_but->setText(QString());
         online_but->setText(QString());
-        label_2->setText(QCoreApplication::translate("MainWindow", "\320\222\320\265\321\200\321\201\320\270\321\217 \320\277\321\200\320\270\320\273\320\276\320\266\320\265\320\275\320\270\321\217 0.01", nullptr));
+        label_2->setText(QCoreApplication::translate("MainWindow", "\320\222\320\265\321\200\321\201\320\270\321\217 \320\277\321\200\320\270\320\273\320\276\320\266\320\265\320\275\320\270\321\217 0.1", nullptr));
         openPort->setText(QCoreApplication::translate("MainWindow", "Open", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "\320\232\320\276\320\273\320\273\320\270\321\207\320\265\321\201\321\202\320\262\320\276 \320\270\320\274\320\277\321\203\320\273\321\214\321\201\320\276\320\262", nullptr));
         lineEdit_2->setText(QCoreApplication::translate("MainWindow", "1000", nullptr));
         label_4->setText(QCoreApplication::translate("MainWindow", "\320\222\321\200\320\265\320\274\321\217 \320\270\320\274\320\277\321\203\320\273\321\214\321\201\320\260 \320\267\320\260\320\277\320\270\321\201\320\270, \320\274\320\272\321\201", nullptr));
         lineEdit->setText(QCoreApplication::translate("MainWindow", "40", nullptr));
-        label_5->setText(QCoreApplication::translate("MainWindow", "\320\241\320\272\320\262\320\260\320\266\320\275\320\276\321\201\321\202\321\214 %", nullptr));
+        label_5->setText(QCoreApplication::translate("MainWindow", "\320\227\320\260\320\277\320\276\320\273\320\275\320\265\320\275\320\270\320\265 %", nullptr));
         lineEdit_3->setText(QCoreApplication::translate("MainWindow", "10", nullptr));
         label_6->setText(QCoreApplication::translate("MainWindow", "\320\235\320\260\320\277\321\200\321\217\320\266\320\265\320\275\320\270\320\265, \320\222", nullptr));
         lineEdit_4->setText(QCoreApplication::translate("MainWindow", "12", nullptr));

@@ -1,6 +1,6 @@
 //---Radionews---https://github.com/Radionews
 //---Walhi---https://github.com/walhi
-//---16.02.2021---
+//---06.03.2021---
 
 #define ST A3
 #define SH A2
@@ -38,13 +38,13 @@ typedef enum mode {
   Read,
   Write,
   VOLTAGE,
-  TEMPERATURE
+  TEMPERATURE,
+  SET
 } Modes;
 
 //---prototipes---
 void init_power5959();
-void increase_power();
-void decrease_power();
+void set_power(uint8_t level);
 void select_chip (chipType new_chip);
 void cs_set(chipType chip, bool state);
 float get_voltage (void);
@@ -68,6 +68,7 @@ uint8_t buf[BUF_LEN];
 
 uint16_t number_of_impulses = 1000;
 uint16_t length_of_impulse = 40;
+uint8_t duty = 5;
 uint8_t count = 0, r_data = 0;
 byte out = 0;
 byte temp = 0;
@@ -137,6 +138,7 @@ void loop() {
       break;
       
     case VOLTAGE:
+      Serial.print("VOLTAGE: ");
       Serial.println(get_voltage(), 1);
       mode = WAIT;
       break;
@@ -157,9 +159,38 @@ void loop() {
       ds.write(0xBE);
 
       data[0] = ds.read(); // Читаем младший байт значения температуры
-      data[1] = ds.read(); // А теперь ст``арший
+      data[1] = ds.read(); // А теперь старший
       digitalWrite(DS_POWER,LOW);
       Serial.println(((data[1] << 8) | data[0]) * 0.0625);
+      mode = WAIT;
+      break;
+
+    case SET:
+      if (chip == NONE) {
+        mode = WAIT;
+        break;
+      }
+      while (Serial.available()!=2);
+      temp = Serial.read();
+      number_of_impulses = temp;
+      temp = Serial.read();
+      number_of_impulses |= (temp<<8);
+
+      while (Serial.available()!=2);
+      temp = Serial.read();
+      length_of_impulse = temp;
+      temp = Serial.read();
+      length_of_impulse |= (temp<<8);
+
+      while (Serial.available()!=1);
+      temp = Serial.read();
+      duty = temp;
+      
+      while (Serial.available()!=1);
+      temp = Serial.read();
+      set_power(temp);
+      delay(2000);
+      
       mode = WAIT;
       break;
       
@@ -179,6 +210,7 @@ void loop() {
         case 'h': select_chip(RT4); break;
         case 'i': select_chip(RT14); break;
         case 'j': select_chip(RT5); break;
+        case 'o': mode = SET; break;
       }
   }
 }
@@ -214,29 +246,16 @@ void init_power5959(){
   digitalWrite(A0,HIGH);  
 }
 
-//увеличить напряжение программирования
-void increase_power(){
-  if(power==0)      power = 1;
+//установка напряжения
+void set_power(uint8_t level){
+  if(level>7) level = 7;
+  if(level==0)digitalWrite(A0,HIGH);
   else{
-    if(power!=128)  power = power>>1;
+    digitalWrite(11, LOW);
+    shiftOut(10, 12, MSBFIRST, ~(1<<(8-level))); 
+    digitalWrite(11, HIGH);
+    digitalWrite(A0,LOW);
   }
-  digitalWrite(11, LOW);
-  shiftOut(10, 12, MSBFIRST, power); 
-  digitalWrite(11, HIGH);
-  digitalWrite(A0,LOW);
-}
-
-//уменьшить напряжение программирования
-void decrease_power(){
-  if(power==1){
-    power = 0;
-    digitalWrite(A0,HIGH);
-  }
-  else{ power = power<<1;}
-  digitalWrite(11, LOW);
-  shiftOut(10, 12, MSBFIRST, power); 
-  digitalWrite(11, HIGH);
-  digitalWrite(A0,LOW);
 }
 
 //загрузка данных в сдвиговые регистры
@@ -344,8 +363,8 @@ void write_byte(uint16_t addr, byte in){
         digitalWrite(WRITE,LOW);
         cs_set(chip,true);
         load_shift();
-        if((length_of_impulse*5)<1000){delayMicroseconds(length_of_impulse*5);}
-        else                          {delay(length_of_impulse*5/1000);}
+        if((length_of_impulse*(100/duty))<1000){delayMicroseconds(length_of_impulse*(100/duty));}
+        else                          {delay(length_of_impulse*(100/duty)/1000);}
 
         if(((in>>j)&0x01) == (!digitalRead(READ))) {break;}
       }
@@ -362,8 +381,8 @@ void write_byte(uint16_t addr, byte in){
         digitalWrite(WRITE,LOW);
         cs_set(chip,true);
         load_shift();
-        if((length_of_impulse*5)<1000){delayMicroseconds(length_of_impulse*5);}
-        else                          {delay(length_of_impulse*5/1000);}
+        if((length_of_impulse*(100/duty))<1000){delayMicroseconds(length_of_impulse*(100/duty));}
+        else                          {delay(length_of_impulse*(100/duty)/1000);}
 
         if(((in>>j)&0x01) == (!digitalRead(READ))) {break;}
       } 
@@ -375,7 +394,7 @@ void write_byte(uint16_t addr, byte in){
 }
 
 float get_voltage (void) {
-  float vADC = (analogRead(voltageControl) / 1024.) * 4.85;
+  float vADC = (analogRead(voltageControl) / 1024.) * 4.45;
   float current = vADC / rBottom;
   return (current * (rTop + rBottom));
 }

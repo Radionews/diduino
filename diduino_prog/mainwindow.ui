@@ -249,7 +249,7 @@
           <item>
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Версия приложения 0.01</string>
+             <string>Версия приложения 0.1</string>
             </property>
            </widget>
           </item>
@@ -392,7 +392,7 @@
           <item>
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>Скважность %</string>
+             <string>Заполнение %</string>
             </property>
            </widget>
           </item>
@@ -443,7 +443,7 @@
              <string>12</string>
             </property>
             <property name="readOnly">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -451,12 +451,18 @@
            <widget class="QSlider" name="horizontalSlider">
             <property name="minimumSize">
              <size>
-              <width>50</width>
+              <width>100</width>
               <height>0</height>
              </size>
             </property>
+            <property name="maximum">
+             <number>7</number>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="tickPosition">
+             <enum>QSlider::TicksBothSides</enum>
             </property>
            </widget>
           </item>
