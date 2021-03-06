@@ -19,7 +19,7 @@ CXXFLAGS      = -fno-keep-inline-dllexport -g -std=gnu++11 -Wall -Wextra -Wextra
 INCPATH       = -I. -ID:\Qt\5.14.2\mingw73_32\include -ID:\Qt\5.14.2\mingw73_32\include\QtWidgets -ID:\Qt\5.14.2\mingw73_32\include\QtGui -ID:\Qt\5.14.2\mingw73_32\include\QtANGLE -ID:\Qt\5.14.2\mingw73_32\include\QtSerialPort -ID:\Qt\5.14.2\mingw73_32\include\QtCore -Idebug -I. -ID:\Qt\5.14.2\mingw73_32\mkspecs\win32-g++ 
 LINKER      =        g++
 LFLAGS        =        -Wl,-subsystem,windows -mthreads
-LIBS        =        D:\Qt\5.14.2\mingw73_32\lib\libQt5Widgets.a D:\Qt\5.14.2\mingw73_32\lib\libQt5Gui.a D:\Qt\5.14.2\mingw73_32\lib\libQt5SerialPort.a D:\Qt\5.14.2\mingw73_32\lib\libQt5Core.a  -lmingw32 D:\Qt\5.14.2\mingw73_32\lib\libqtmain.a -LC:\openssl\lib -LC:\Utils\my_sql\mysql-5.7.25-win32\lib -LC:\Utils\postgresql\pgsql\lib -lshell32 
+LIBS        =        -L$(QTDIR)\plugins\imageformats D:\Qt\5.14.2\mingw73_32\lib\libQt5Widgets.a D:\Qt\5.14.2\mingw73_32\lib\libQt5Gui.a D:\Qt\5.14.2\mingw73_32\lib\libQt5SerialPort.a D:\Qt\5.14.2\mingw73_32\lib\libQt5Core.a  -lmingw32 D:\Qt\5.14.2\mingw73_32\lib\libqtmain.a -LC:\openssl\lib -LC:\Utils\my_sql\mysql-5.7.25-win32\lib -LC:\Utils\postgresql\pgsql\lib -lshell32 
 QMAKE         = D:\Qt\5.14.2\mingw73_32\bin\qmake.exe
 DEL_FILE      = del
 CHK_DIR_EXISTS= if not exist
@@ -554,7 +554,12 @@ debug/main.o: main.cpp mainwindow.h \
 		D:/Qt/5.14.2/mingw73_32/include/QtCore/qeventloop.h \
 		D:/Qt/5.14.2/mingw73_32/include/QtWidgets/qdesktopwidget.h \
 		D:/Qt/5.14.2/mingw73_32/include/QtGui/qguiapplication.h \
-		D:/Qt/5.14.2/mingw73_32/include/QtGui/qinputmethod.h
+		D:/Qt/5.14.2/mingw73_32/include/QtGui/qinputmethod.h \
+		D:/Qt/5.14.2/mingw73_32/include/QtCore/QtPlugin \
+		D:/Qt/5.14.2/mingw73_32/include/QtCore/qplugin.h \
+		D:/Qt/5.14.2/mingw73_32/include/QtCore/qpointer.h \
+		D:/Qt/5.14.2/mingw73_32/include/QtCore/qjsonobject.h \
+		D:/Qt/5.14.2/mingw73_32/include/QtCore/qjsonvalue.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o main.cpp
 
 debug/mainwindow.o: mainwindow.cpp mainwindow.h \

@@ -62,7 +62,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>E:/PROJECTS/open.ico</normaloff>E:/PROJECTS/open.ico</iconset>
+              <normaloff>ico/open.ico</normaloff>ico/open.ico</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -79,7 +79,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>E:/PROJECTS/save.ico</normaloff>E:/PROJECTS/save.ico</iconset>
+              <normaloff>ico/save.ico</normaloff>ico/save.ico</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -112,7 +112,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>E:/PROJECTS/ico.ico</normaloff>E:/PROJECTS/ico.ico</iconset>
+              <normaloff>ico/ico.ico</normaloff>ico/ico.ico</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -129,7 +129,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>E:/PROJECTS/check.ico</normaloff>E:/PROJECTS/check.ico</iconset>
+              <normaloff>ico/check.ico</normaloff>ico/check.ico</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -146,7 +146,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>E:/PROJECTS/scan.ico</normaloff>E:/PROJECTS/scan.ico</iconset>
+              <normaloff>ico/scan.ico</normaloff>ico/scan.ico</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -163,7 +163,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>E:/PROJECTS/burn.ico</normaloff>E:/PROJECTS/burn.ico</iconset>
+              <normaloff>ico/burn.ico</normaloff>ico/burn.ico</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -196,7 +196,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>E:/PROJECTS/options.ico</normaloff>E:/PROJECTS/options.ico</iconset>
+              <normaloff>ico/options.ico</normaloff>ico/options.ico</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -213,7 +213,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>E:/PROJECTS/help.ico</normaloff>E:/PROJECTS/help.ico</iconset>
+              <normaloff>ico/help.ico</normaloff>ico/help.ico</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -233,10 +233,10 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>E:/PROJECTS/online.ico</normaloff>
+              <normaloff>ico/online.ico</normaloff>
               <normalon>E:/PROJECTS/online.ico</normalon>
-              <disabledoff>E:/PROJECTS/offline.ico</disabledoff>
-              <disabledon>E:/PROJECTS/offline.ico</disabledon>E:/PROJECTS/online.ico</iconset>
+              <disabledoff>ico/offline.ico</disabledoff>
+              <disabledon>ico/offline.ico</disabledon>ico/online.ico</iconset>
             </property>
             <property name="iconSize">
              <size>

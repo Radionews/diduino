@@ -139,7 +139,7 @@ public:
         open_file_but = new QPushButton(centralwidget);
         open_file_but->setObjectName(QString::fromUtf8("open_file_but"));
         QIcon icon;
-        icon.addFile(QString::fromUtf8("E:/PROJECTS/open.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8("ico/open.ico"), QSize(), QIcon::Normal, QIcon::Off);
         open_file_but->setIcon(icon);
         open_file_but->setIconSize(QSize(48, 48));
 
@@ -148,7 +148,7 @@ public:
         save_file_but = new QPushButton(centralwidget);
         save_file_but->setObjectName(QString::fromUtf8("save_file_but"));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8("E:/PROJECTS/save.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8("ico/save.ico"), QSize(), QIcon::Normal, QIcon::Off);
         save_file_but->setIcon(icon1);
         save_file_but->setIconSize(QSize(48, 48));
 
@@ -161,7 +161,7 @@ public:
         read_ic_but = new QPushButton(centralwidget);
         read_ic_but->setObjectName(QString::fromUtf8("read_ic_but"));
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8("E:/PROJECTS/ico.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QString::fromUtf8("ico/ico.ico"), QSize(), QIcon::Normal, QIcon::Off);
         read_ic_but->setIcon(icon2);
         read_ic_but->setIconSize(QSize(48, 48));
 
@@ -170,7 +170,7 @@ public:
         check_ic_but = new QPushButton(centralwidget);
         check_ic_but->setObjectName(QString::fromUtf8("check_ic_but"));
         QIcon icon3;
-        icon3.addFile(QString::fromUtf8("E:/PROJECTS/check.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon3.addFile(QString::fromUtf8("ico/check.ico"), QSize(), QIcon::Normal, QIcon::Off);
         check_ic_but->setIcon(icon3);
         check_ic_but->setIconSize(QSize(48, 48));
 
@@ -179,7 +179,7 @@ public:
         scan_ic_but = new QPushButton(centralwidget);
         scan_ic_but->setObjectName(QString::fromUtf8("scan_ic_but"));
         QIcon icon4;
-        icon4.addFile(QString::fromUtf8("E:/PROJECTS/scan.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon4.addFile(QString::fromUtf8("ico/scan.ico"), QSize(), QIcon::Normal, QIcon::Off);
         scan_ic_but->setIcon(icon4);
         scan_ic_but->setIconSize(QSize(48, 48));
 
@@ -188,7 +188,7 @@ public:
         flash_ic_but = new QPushButton(centralwidget);
         flash_ic_but->setObjectName(QString::fromUtf8("flash_ic_but"));
         QIcon icon5;
-        icon5.addFile(QString::fromUtf8("E:/PROJECTS/burn.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon5.addFile(QString::fromUtf8("ico/burn.ico"), QSize(), QIcon::Normal, QIcon::Off);
         flash_ic_but->setIcon(icon5);
         flash_ic_but->setIconSize(QSize(48, 48));
 
@@ -201,7 +201,7 @@ public:
         options_but = new QPushButton(centralwidget);
         options_but->setObjectName(QString::fromUtf8("options_but"));
         QIcon icon6;
-        icon6.addFile(QString::fromUtf8("E:/PROJECTS/options.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon6.addFile(QString::fromUtf8("ico/options.ico"), QSize(), QIcon::Normal, QIcon::Off);
         options_but->setIcon(icon6);
         options_but->setIconSize(QSize(48, 48));
 
@@ -210,7 +210,7 @@ public:
         help_but = new QPushButton(centralwidget);
         help_but->setObjectName(QString::fromUtf8("help_but"));
         QIcon icon7;
-        icon7.addFile(QString::fromUtf8("E:/PROJECTS/help.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon7.addFile(QString::fromUtf8("ico/help.ico"), QSize(), QIcon::Normal, QIcon::Off);
         help_but->setIcon(icon7);
         help_but->setIconSize(QSize(48, 48));
 
@@ -220,10 +220,10 @@ public:
         online_but->setObjectName(QString::fromUtf8("online_but"));
         online_but->setEnabled(false);
         QIcon icon8;
-        icon8.addFile(QString::fromUtf8("E:/PROJECTS/online.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon8.addFile(QString::fromUtf8("ico/online.ico"), QSize(), QIcon::Normal, QIcon::Off);
         icon8.addFile(QString::fromUtf8("E:/PROJECTS/online.ico"), QSize(), QIcon::Normal, QIcon::On);
-        icon8.addFile(QString::fromUtf8("E:/PROJECTS/offline.ico"), QSize(), QIcon::Disabled, QIcon::Off);
-        icon8.addFile(QString::fromUtf8("E:/PROJECTS/offline.ico"), QSize(), QIcon::Disabled, QIcon::On);
+        icon8.addFile(QString::fromUtf8("ico/offline.ico"), QSize(), QIcon::Disabled, QIcon::Off);
+        icon8.addFile(QString::fromUtf8("ico/offline.ico"), QSize(), QIcon::Disabled, QIcon::On);
         online_but->setIcon(icon8);
         online_but->setIconSize(QSize(48, 48));
 
