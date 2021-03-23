@@ -655,7 +655,7 @@ public:
         help_but->setText(QString());
         online_but->setText(QString());
         label_2->setText(QCoreApplication::translate("MainWindow", "\320\222\320\265\321\200\321\201\320\270\321\217 \320\277\321\200\320\270\320\273\320\276\320\266\320\265\320\275\320\270\321\217 0.1", nullptr));
-        openPort->setText(QCoreApplication::translate("MainWindow", "Open", nullptr));
+        openPort->setText(QCoreApplication::translate("MainWindow", "Connect", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "\320\232\320\276\320\273\320\273\320\270\321\207\320\265\321\201\321\202\320\262\320\276 \320\270\320\274\320\277\321\203\320\273\321\214\321\201\320\276\320\262", nullptr));
         lineEdit_2->setText(QCoreApplication::translate("MainWindow", "1000", nullptr));
         label_4->setText(QCoreApplication::translate("MainWindow", "\320\222\321\200\320\265\320\274\321\217 \320\270\320\274\320\277\321\203\320\273\321\214\321\201\320\260 \320\267\320\260\320\277\320\270\321\201\320\270, \320\274\320\272\321\201", nullptr));

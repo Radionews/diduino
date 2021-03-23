@@ -294,7 +294,7 @@
           <item>
            <widget class="QPushButton" name="openPort">
             <property name="text">
-             <string>Open</string>
+             <string>Connect</string>
             </property>
            </widget>
           </item>

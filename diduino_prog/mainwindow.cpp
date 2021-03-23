@@ -140,10 +140,10 @@ void MainWindow::on_port_comboBox_currentIndexChanged(const QString &arg1)
 
 void MainWindow::openSerialPort(QString path)
 {
-    log("Open " + path);
+    log("Подключение " + path);
     serialPort->setPortName(path);
     serialPort->setBaudRate(QSerialPort::Baud115200);
-    ui->openPort->setText("Close");
+    ui->openPort->setText("Disconnect");
     updatePortsTimer.stop();
     if (serialPort->open(QIODevice::ReadWrite)) {
         serialPort->waitForReadyRead(4000);
@@ -176,7 +176,7 @@ void MainWindow::closeSerialPort()
     if (serialPort->isOpen()){
         serialPort->close();
         log(QString("Отключение..."));
-        ui->openPort->setText("Open");
+        ui->openPort->setText("Connect");
         updatePortsTimer.start();
         ui->online_but->setEnabled(false);
         QObject::disconnect(serialDataConnection);
