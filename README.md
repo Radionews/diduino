@@ -22,6 +22,11 @@
 
 Подробней рассматриваю этот вопрос в видео: <https://youtu.be/s_gQgh_qvWw>
 
+**В версии печатной платы 1.1 так же найден недочет!!! Спасибо PticDado!** 
+
+Резисторная сборка R18 не подключена к земле. Контакт просто в воздухе висит, надо кинуть перемычку до земли (она вокруг контакта).
+В проекте easyEDA печатная плата уже поправлена. 
+
 ## Дидuino programmer
 
 Project of the programmer of ROM chips: K155RE3, KR556RT4, KR556RT14, KR556RT5 and their analogs. It is based on the following projects:
